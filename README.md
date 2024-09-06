@@ -10,7 +10,7 @@ The SE and Tandem Performance calculators are based on the following publication
 
 # Download and Install
 
-* Recommended: The SE and Tandem Calculators run most reliably in a conda virtual environment. To set up a virtual environment, first install conda from https://conda.io/projects/conda/en/latest/user-guide/install/index.html. Once conda is installed, use 'conda env create -n \<name>' replacing \<name> with your environment name to create a new virtual environment. Activate your environment with 'conda activate \<name>' and install the packages listed below using 'conda install colorama ipywidgets  matplotlib numpy pandas traitlets cycler ipython scipy' followed by 'pip install iv-params os-sys textwrap3 tk pytest-warnings datetime'.
+* Recommended: The SE and Tandem Calculators run most reliably in a conda virtual environment. To set up a virtual environment, first install conda from https://conda.io/projects/conda/en/latest/user-guide/install/index.html. Once conda is installed, use 'conda env create -n \<name>' replacing \<name> with your environment name to create a new virtual environment. Activate your environment with 'conda activate \<name>' and install the packages listed below using 'conda install colorama ipywidgets  matplotlib numpy pandas traitlets cycler ipython scipy openpyxl' followed by 'pip install iv-params os-sys textwrap3 tk pytest-warnings datetime'.
 
 * Clone or download the code for the SE and Tandem Performance calculators here: https://github.nrel.gov/Tandems/SE-and-Tandems
 
@@ -25,7 +25,8 @@ Packages needed for Spectral Efficiency calculator
 * datetime
 * tkinter
 * colorama
-* ipywidgets 
+* ipywidgets
+* openpyxl 
 * matplotlib
 * numpy
 * pandas
@@ -43,7 +44,8 @@ Packages needed for Tandem Performance calculator
 * sys
 * tkinter
 * colorama
-* ipywidgets 
+* ipywidgets
+* openpyxl 
 * matplotlib
 * numpy
 * pandas
