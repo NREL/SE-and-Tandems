@@ -1,4 +1,4 @@
-# SE-and-Tandem Calculators
+# Spectral Efficiency and Tandem Performance Calculators
 * The Spectral Efficiency (SE) calculator takes a set of current vs voltage (I-V) and quantum efficiency (QE) data along with a spectrum input and plots the spectral efficiency of the cells represented by the datasets for the spectrum provided. 
 
 * The Tandem Performance calculator uses the calculated spectral efficiency of top and bottom cells and the transmission data of the top cell to calculate performance metrics for a tandem device in either a two or four terminal architecture.
