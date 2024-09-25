@@ -357,7 +357,7 @@ def calc_tandem_4T_eff(top_file_list, bot_file_list, lambdafile, coupling, trans
             
             #plotting 
             if top_name not in cellNameList:
-                ax5.plot(top_se.v.replace(0,), top_se.i.replace(0,), label=("top I-V " + top_name))   #doesn't seem to need zero replacement - maybe it does?
+                ax5.plot(top_se.v.dropna(), top_se.i.dropna(), label=("top I-V " + top_name))   #doesn't seem to need zero replacement - maybe it does?
             if bot_name not in cellNameList:
                 ax5.plot(bot_se.v, bot_se.i, label=("bottom I-V " + bot_name))
             if coupling == 'lambda':
@@ -755,7 +755,7 @@ def calc_tandem_2T_eff(top_file_list, bot_file_list, lambdafile, coupling, trans
             #top_se['ftop'] is top cell flag (1 above Eg (top) and 0 below Eg(top))
             top_se['2TSE']= top_se['SE']*top_se['ftop'] * (min(QE_Integrated_top_Jsc, QE_Integrated_bot_Jsc)/QE_Integrated_top_Jsc)
             #bot_se['ftop'] is bottom cell flag (0 above Eg (top) and 1 below Eg(top))
-            bot_se['2TSE']= bot_se['SE']*bot_se['fbot'] * (min(QE_Integrated_top_Jsc, QE_Integrated_bot_Jsc)/QE_Integrated_top_Jsc)
+            bot_se['2TSE']= bot_se['SE']*bot_se['fbot'] * (min(QE_Integrated_top_Jsc, QE_Integrated_bot_Jsc)/QE_Integrated_bot_Jsc)
             
             ####
             
@@ -818,7 +818,7 @@ def calc_tandem_2T_eff(top_file_list, bot_file_list, lambdafile, coupling, trans
             top_i = top_se.i
             bot_i = filtered_bot_i
 
-            # Determine the call with the max current
+            # Determine the cell with the max current
             if np.max(top_i) > np.max(bot_i):
                 added_current = bot_i
             else:
@@ -829,7 +829,8 @@ def calc_tandem_2T_eff(top_file_list, bot_file_list, lambdafile, coupling, trans
 
             # Interpolate each dataset
             bot_interp = interp1d(filtered_bot_i, bot_se.v, bounds_error=False) 
-            top_interp = interp1d(top_se.i.replace(0,), top_se.v.replace(0,), bounds_error=False) #.replace(0,) needed to reduce stray lines in plotting
+            top_interp = interp1d(top_se.i, top_se.v, bounds_error=False)
+            #top_interp = interp1d(top_se.i.replace(0,), top_se.v.replace(0,), bounds_error=False) #.replace(0,) needed to reduce stray lines in plotting
 
             #new voltage of top and bot
             new_bot_v = bot_interp(new_i) 
@@ -871,7 +872,8 @@ def calc_tandem_2T_eff(top_file_list, bot_file_list, lambdafile, coupling, trans
             elif bot_name not in cellNameList:
                 ax6.plot(new_bot_v, new_i, label=("bottom " + bot_name + ", transmission = " + str(transmission) + "%"))
             if top_name not in cellNameList:
-                ax6.plot(top_se.v.replace(0,), top_se.i.replace(0,), label=("raw top " + top_name)) 
+                ax6.plot(top_se.v.dropna(), top_se.i.dropna(), label=("raw top " + top_name)) # optional dropna flag: ignore_index=True
+                #ax6.plot(top_se.v.replace(0,), top_se.i.replace(0,), label=("raw top " + top_name)) 
             
             
             

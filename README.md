@@ -10,7 +10,9 @@ The SE and Tandem Performance calculators are based on the following publication
 
 # Download and Install
 
-* Recommended: The SE and Tandem Calculators run most reliably in a conda virtual environment. To set up a virtual environment, first install conda from https://conda.io/projects/conda/en/latest/user-guide/install/index.html. Once conda is installed, use 'conda env create -n \<name>' replacing \<name> with your environment name to create a new virtual environment. Activate your environment with 'conda activate \<name>' and install the packages listed below using 'conda install colorama ipywidgets  matplotlib numpy pandas traitlets cycler ipython scipy openpyxl' followed by 'pip install iv-params textwrap3 tk pytest-warnings datetime'.
+* Recommended: The SE and Tandem Calculators run most reliably in a conda virtual environment. To set up a virtual environment, first install conda from https://conda.io/projects/conda/en/latest/user-guide/install/index.html. Once conda is installed, use 'conda env create -n \<name>' replacing \<name> with your environment name to create a new virtual environment. Activate your environment with 'conda activate \<name>' and install the packages listed below using 
+* 'conda install colorama ipywidgets  matplotlib numpy pandas traitlets cycler ipython scipy openpyxl' followed by 
+* 'pip install iv-params os-sys textwrap3 tk pytest-warnings datetime'.
 
 * Clone or download the code for the SE and Tandem Performance calculators here: https://github.nrel.gov/Tandems/SE-and-Tandems
 
@@ -25,8 +27,7 @@ Packages needed for Spectral Efficiency calculator
 * datetime
 * tkinter
 * colorama
-* ipywidgets
-* openpyxl 
+* ipywidgets 
 * matplotlib
 * numpy
 * pandas
@@ -34,6 +35,7 @@ Packages needed for Spectral Efficiency calculator
 * cycler
 * ipython
 * scipy
+* openpyxl
 * iv-params
 * textwrap
 * warnings
@@ -44,8 +46,7 @@ Packages needed for Tandem Performance calculator
 * sys
 * tkinter
 * colorama
-* ipywidgets
-* openpyxl 
+* ipywidgets 
 * matplotlib
 * numpy
 * pandas
@@ -53,6 +54,7 @@ Packages needed for Tandem Performance calculator
 * cycler
 * IPython
 * scipy
+* openpyxl
 * warnings
 
 
@@ -68,7 +70,7 @@ Instructions for Spectral Efficiency calculator:
 
 * Navigate to the folder "SE-and-Tandems/notebooks" and open SE\_Calculation\_GUI.ipynb
 
-* Run each cell sequentially until the SE GUI appears 
+* Run each cell sequentially until the SE GUI appears (press shift+return while a cell is selected to run)
 
 * To use the GUI, you will need a I-V file and an EQE file for each of the cells you intend to compare as well as a single spectrum file (i.e. AM1.5G). For this tutorial, example files are located in folders under "SE-and-Tandems/Examples/SE"
 
