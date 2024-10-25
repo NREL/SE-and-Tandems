@@ -3,7 +3,6 @@
 import os
 import sys 
 from tkinter import Tk, filedialog
-
 import ipywidgets as widgets
 from IPython.display import clear_output, display
 import matplotlib.pyplot as plt
@@ -48,7 +47,6 @@ def clip_name(filename):
 #Doing all 4T calculations here   
 def calc_tandem_4T_eff(top_file_list, bot_file_list, lambdafile, coupling, transmission): #top_file_list= SE file of top cells, bot_file_list=SE file of bottom cells, lambdafile= Transmission file of top cell, coupling= different optical coupling methods such as ideal, fixed and lambda, and transmission= controlling light transmission using fixed coupling onto bottom cells
     
-    
     # Create list for tandems
     tandem_list = []
     # Create list for QE
@@ -86,7 +84,6 @@ def calc_tandem_4T_eff(top_file_list, bot_file_list, lambdafile, coupling, trans
         fig3.suptitle('Spectral Efficiency of 4T Tandem \n'+coupling+' coupling', fontsize=16)
     fig3.tight_layout()
 
-      
     #plotting SE SJ
     fig4, (ax4) = plt.subplots(1, figsize=(6, 4))
     ax4.set_ylabel("SE (%)",color="red",fontsize=14)
@@ -101,7 +98,6 @@ def calc_tandem_4T_eff(top_file_list, bot_file_list, lambdafile, coupling, trans
     fig5.suptitle('Cells I-V', fontsize=16)
     fig5.tight_layout()
     
-
     #define list of cell names for loop to prevent double counting of cells
     cellNameList = []
 
@@ -120,7 +116,6 @@ def calc_tandem_4T_eff(top_file_list, bot_file_list, lambdafile, coupling, trans
         else:
             raise WrongFileFormat
     
-        
         ## Set up names for bottom cell.
         bot_name = clip_name(filename1)
 
@@ -138,7 +133,6 @@ def calc_tandem_4T_eff(top_file_list, bot_file_list, lambdafile, coupling, trans
             else:
                 raise WrongFileFormat
     
-            
             # Set up names for top cell.
             top_name = clip_name(filename2)
             
@@ -178,11 +172,9 @@ def calc_tandem_4T_eff(top_file_list, bot_file_list, lambdafile, coupling, trans
                     bot_se['fbot'] = topTr['Tr_smooth']
                     bot_se['fbot'] = bot_se['fbot'].replace(np.nan, 0)
 
-
                 except:
                     raise FileMissing
                     
-                
             # conditions for ideal coupling 
             elif coupling == 'ideal':
                 transmission = 100
@@ -220,7 +212,6 @@ def calc_tandem_4T_eff(top_file_list, bot_file_list, lambdafile, coupling, trans
                 bot_se.loc[bot_se['wl'] < top_bg_nm, 'fbot'] = 0
                 bot_se.loc[bot_se['wl'] >= top_bg_nm, 'fbot'] = transmission/100
 
-  
             else:
                 raise NoSelectionMade
         
@@ -231,25 +222,19 @@ def calc_tandem_4T_eff(top_file_list, bot_file_list, lambdafile, coupling, trans
             
             # Top cell
             #computing topcell power
-            
             #from the provided top cell file - top_se['SE'] column for spectral efficiency (percent) and top_se['I_sun'] column for solar irradiance (W/m^2)  
             #top_se['ftop'] is top cell flag (1 above Eg (top) and 0 below Eg(top))
             top_se['effic'] = top_se['SE']*top_se['ftop']*top_se['I_sun']
-            #top_se['effic'] = power/nm (W/nm*m"2)
             top_se['effic'] = top_se['effic'].replace(np.nan,0)
-            
             
             #computing topcell efficiency = computing topcell power/standard incident specturm power (1000 W/m^2)
             top_eff = np.trapz(top_se['effic'])/1000
             #result until two decimal points
             top_eff = float("{:.2f}".format(top_eff))
             
-    
-    
             # Bottom cell
             #computing bottom cell power
-            
-             #from the provided top cell file - bot_se['SE'] column for speactral efficiency (percent) and bot_se['I_sun'] column for solar irradiance (W/m^2)  
+            #from the provided top cell file - bot_se['SE'] column for speactral efficiency (percent) and bot_se['I_sun'] column for solar irradiance (W/m^2)  
             #bot_se['fbot'] is top cell flag (0 above Eg (top) and 1 below Eg(top))
             bot_se['effic'] = bot_se['SE']*bot_se['fbot']*bot_se['I_sun']
             
@@ -300,7 +285,6 @@ def calc_tandem_4T_eff(top_file_list, bot_file_list, lambdafile, coupling, trans
             #passing QE information
             qe_list.append(msg2)
             
-            
             #plotting QE for 4T tandem
             if top_name not in cellNameList:
                 ax2.plot(top_se['wl'], top_se['QE'], label="top QE " + top_name) 
@@ -315,7 +299,6 @@ def calc_tandem_4T_eff(top_file_list, bot_file_list, lambdafile, coupling, trans
             #spectral efficiency for 4T tandem
             top_se['4TSE']= top_se['SE']*top_se['ftop']
             bot_se['4TSE']= bot_se['SE']*bot_se['fbot']  
-            
             
             ##calculating max power point and Jsc from J-V curve using iv_param
             
@@ -364,12 +347,7 @@ def calc_tandem_4T_eff(top_file_list, bot_file_list, lambdafile, coupling, trans
                 ax5.plot(bot_se.v, filtered_bot_i, label=(bot_name + " filtered through " + top_name))
             elif bot_name not in cellNameList:
                 ax5.plot(bot_se.v, filtered_bot_i, label=(bot_name + ", transmission = " + str(transmission) + "%"))
-            
-            #passing information of 4T tandem efficiency 
-            #msg5 = "Power Density at Max Power Point for 4T Tandem of " + str(top_name) + " and " + "filtered_" + str(bot_name) + ": " + str(pmp_2T) + " W/m^2"
-            #tandem_iv.append(msg5)
-            
-            # MAKE THE FLAGS BOOLEAN SO TEST IS EASY!
+                        
             #Yes = 1, No = 0 flags. Set these for your desired output.
             #outputpath = '../tandems' # name of directory where we will save tandem data
             #Print data in this notebook
@@ -384,7 +362,6 @@ def calc_tandem_4T_eff(top_file_list, bot_file_list, lambdafile, coupling, trans
             ##########
             if save_ind == 1:
             #create a compiled parameter dataframe
-                    
                 if coupling == 'ideal':
                     transmission = 100
                 elif coupling == 'lambda':
@@ -498,13 +475,8 @@ def calc_tandem_4T_eff(top_file_list, bot_file_list, lambdafile, coupling, trans
             i += 1
         fig5.savefig('../tandems_images/{}{:d}.png'.format('4T_IV_' + top_name + '+' + bot_name + '_' + coupling + '_', i), format="png", bbox_inches = "tight", dpi=500)
 
-
     return tandem_eff, tandem_data, fig, fig2, fig3, fig4, fig5, tandem_list, tandem_4T, qe_list, tandem_iv
         
-    
-
-    
-
 #Doing all 2T calculations here
     
 def calc_tandem_2T_eff(top_file_list, bot_file_list, lambdafile, coupling, transmission): #top_file_list= SE file of top cells, bot_file_list=SE file of bottom cells, lambdafile= Transmission file of top cell, coupling= different optical coupling methods such as ideal, fixed and lambda, and transmission= controlling light transmission using fixed coupling onto bottom cells
@@ -611,7 +583,6 @@ def calc_tandem_2T_eff(top_file_list, bot_file_list, lambdafile, coupling, trans
             #bottom cell flag (0 above Eg (top) and 1 below Eg(top))
             bot_se['fbot'] = np.NaN
             
-            
             # Define coupling
         
             if coupling == 'lambda':
@@ -677,16 +648,10 @@ def calc_tandem_2T_eff(top_file_list, bot_file_list, lambdafile, coupling, trans
                 bot_se.loc[bot_se['wl'] < top_bg_nm, 'fbot'] = 0
                 bot_se.loc[bot_se['wl'] >= top_bg_nm, 'fbot'] = transmission/100
 
-  
             else:
                 raise NoSelectionMade
-        
-            # FUNCTION OPPORTUNITY HERE? Need to numerically integrate each subcell.
-            
-            
+                    
             ##### 2T calculations 
-            
-            
             
             #constant spectralJscfactor
             q = 1.602176634*10**-19  # Elementary charge in SI unit
@@ -696,34 +661,27 @@ def calc_tandem_2T_eff(top_file_list, bot_file_list, lambdafile, coupling, trans
             
             
             #top cell for 2T tandem
-            
             #### top QE
             top_se['QE'] = top_se['QE_smooth']*top_se['ftop']
             top_se['QE'] = top_se['QE'].replace(np.nan,0)
-            
             
             #calculate Jsc from top QE
             EQE_1 = spectralJscfactor*top_se['wl']*top_se['QE']* top_se['I_sun']
             EQE_1= EQE_1.replace(np.nan,0)
             
-            
             #Integrated Jsc from Spectally-resolved Jsc (top).....normalized from mA to A by dividing the electric current value by 1000
             QE_Integrated_top_Jsc= np.trapz(EQE_1)/1000
             QE_Integrated_top_Jsc = float("{:.2f}".format(QE_Integrated_top_Jsc))
             
-            
             #bottom cell for 2T tandem
-            
             
             #### bot QE
             bot_se['QE']=bot_se['QE_smooth']*bot_se['fbot']
             bot_se['QE'] = bot_se['QE'].replace(np.nan,0)
             
-            
             #calculate Jsc from bottom cell
             EQE_2 = spectralJscfactor*bot_se['wl']*bot_se['QE']*bot_se['I_sun']
             EQE_2= EQE_2.replace(np.nan,0)
-            
             
             #Integrated Jsc from Spectally-resolved Jsc (bottom).....normalized from mA to A by dividing the electric current value by 1000
             QE_Integrated_bot_Jsc= np.trapz(EQE_2)/1000
@@ -735,7 +693,6 @@ def calc_tandem_2T_eff(top_file_list, bot_file_list, lambdafile, coupling, trans
             #passing QE information
             qe_list.append(msg2)
            
-            
             #plotting QE
             if top_name not in cellNameList:
                 ax2.plot(top_se['wl'], top_se['QE'], label="top QE " + top_name) 
@@ -757,13 +714,11 @@ def calc_tandem_2T_eff(top_file_list, bot_file_list, lambdafile, coupling, trans
             #bot_se['ftop'] is bottom cell flag (0 above Eg (top) and 1 below Eg(top))
             bot_se['2TSE']= bot_se['SE']*bot_se['fbot'] * (min(QE_Integrated_top_Jsc, QE_Integrated_bot_Jsc)/QE_Integrated_bot_Jsc)
             
-            ####
-            
             #2T tandem power factored by lower Jsc determined from QE of either top or bottom cells
             
             #top cell power
             top_se['2Teffic'] = top_se['SE']*top_se['ftop']*top_se['I_sun']
-            top_se['2Teffic'] = top_se['2Teffic'] * (min(QE_Integrated_top_Jsc, QE_Integrated_bot_Jsc)/QE_Integrated_top_Jsc) #######is this eqn correct?
+            top_se['2Teffic'] = top_se['2Teffic'] * (min(QE_Integrated_top_Jsc, QE_Integrated_bot_Jsc)/QE_Integrated_top_Jsc)
             #top_se['2Teffic'] = power/nm (W/nm*m"2)
             top_se['2Teffic'] = top_se['2Teffic'].replace(np.nan,0)
             #computing top cell efficiency = computing topcell power/standard incident spectrum power (1000 W/m^2)
@@ -781,13 +736,11 @@ def calc_tandem_2T_eff(top_file_list, bot_file_list, lambdafile, coupling, trans
             bot_2T_eff = np.trapz(bot_se['2Teffic'])/1000
             bot_2T_eff = float("{:.2f}".format(bot_2T_eff))
             
-            
             ######
             #2T tandem efficiency based on SE
             Effi_2T = top_2T_eff+bot_2T_eff
             Effi_2T = float("{:.2f}".format(Effi_2T))
            
-            
             #2T tandem efficiency calculations based on J-V curves of top and bottom cells
             
             #top cell
@@ -797,7 +750,6 @@ def calc_tandem_2T_eff(top_file_list, bot_file_list, lambdafile, coupling, trans
             ivFOM_top =ivFOM_top.calc_iv_params()
             #top cell current from J-V curve
             Jsc_top=ivFOM_top['isc']
-            
             
             #bottom cell
             #reading bottom cell current (i) and voltage (v)
@@ -813,7 +765,6 @@ def calc_tandem_2T_eff(top_file_list, bot_file_list, lambdafile, coupling, trans
             delta_Jsc=Jsc_bot - QE_Integrated_bot_Jsc
             filtered_bot_i=bot_se.i-delta_Jsc
             
-            
             #comparing top cell and filtered bottom cell Jsc 
             top_i = top_se.i
             bot_i = filtered_bot_i
@@ -825,12 +776,11 @@ def calc_tandem_2T_eff(top_file_list, bot_file_list, lambdafile, coupling, trans
                 added_current = top_i
 
             # equal spacing 
-            new_i = np.linspace(0, added_current.max(), 5000)  #######5000 is probably more than enough
+            new_i = np.linspace(0, added_current.max(), 5000)
 
             # Interpolate each dataset
             bot_interp = interp1d(filtered_bot_i, bot_se.v, bounds_error=False) 
             top_interp = interp1d(top_se.i, top_se.v, bounds_error=False)
-            #top_interp = interp1d(top_se.i.replace(0,), top_se.v.replace(0,), bounds_error=False) #.replace(0,) needed to reduce stray lines in plotting
 
             #new voltage of top and bot
             new_bot_v = bot_interp(new_i) 
@@ -845,19 +795,10 @@ def calc_tandem_2T_eff(top_file_list, bot_file_list, lambdafile, coupling, trans
             
             #from 2T tandem I-V
             ivFOM_tandem = IV_Params(added_voltage, new_i)
-            #ivFOM_tandem.calc_iv_params()
             ivFOM_tandem = ivFOM_tandem.calc_iv_params()  # why is this variable overwritten twice? Does the previous line do anything?
             #calculate max power point from 2T tandem I-V
             Tandem_Max_Power_Point=ivFOM_tandem['pmp']*10.0 #10.0 to convert from mW/cm^2 to W/m^2
-            Tandem_Max_Power_Point=float("{:.2f}".format(Tandem_Max_Power_Point))
-            
-            
-            #message for 2T tandem efficiency based on J-V curves 
-            #msg5 = "Power Density at Max Power Point for 2T Tandem of " + str(top_name) + " on " + str(bot_name) + ": " + str(Tandem_Max_Power_Point) + " W/m^2"
-            #msg5 = "" #optional edit - list pmp, voc, vmp, imp - sum top cell and bottom cell for each - need to check limiting current for 2T though 4/8/24
-            #passing 2T tandem efficiency information
-            #tandem_v.append(msg5)
-          
+            Tandem_Max_Power_Point=float("{:.2f}".format(Tandem_Max_Power_Point))    
             
             #plotting
 
@@ -875,10 +816,6 @@ def calc_tandem_2T_eff(top_file_list, bot_file_list, lambdafile, coupling, trans
                 ax6.plot(top_se.v.dropna(), top_se.i.dropna(), label=("raw top " + top_name)) # optional dropna flag: ignore_index=True
                 #ax6.plot(top_se.v.replace(0,), top_se.i.replace(0,), label=("raw top " + top_name)) 
             
-            
-            
-            
-            # MAKE THE FLAGS BOOLEAN SO TEST IS EASY!
             #Yes = 1, No = 0 flags. Set these for your desired output.
             #outputpath = '../tandems' # name of directory where we will save tandem data
             #Print data in this notebook
@@ -910,8 +847,6 @@ def calc_tandem_2T_eff(top_file_list, bot_file_list, lambdafile, coupling, trans
                 wlResolvedIV = pd.DataFrame({col: data for col, data in zip(wl_IV_columns, wl_IV)})
                 tandemSE = pd.concat([tandemSEtemp,wlResolvedData,wlResolvedIV],axis=1)
 
-
-                
             #Data saving
             if coupling=='fixed':
                 i = 1
@@ -930,16 +865,12 @@ def calc_tandem_2T_eff(top_file_list, bot_file_list, lambdafile, coupling, trans
                 if coupling == 'fixed':
                     
                     msg3= '\033[1m' + "2T Tandem" + '\033[0m' + "\nCoupling Method: " + str(coupling) + "\nlight transmitted onto bottom cell: " + str(transmission) + "\nTop Cell is " + str(top_name) + "\n" + str(top_name) + " limiting efficiency = " + str(top_2T_eff) + "%" + "\nBottom Cell is " + str(bot_name) + "\n" + str(bot_name) + " limiting efficiency = " + str(bot_2T_eff) + "%" + "\nThe tandem efficiency for " + str(top_name) + " and " + str(bot_name) + " is "+ str(Effi_2T) + "%" + "\nThe results are saved in the 'tandems_data' folder and the file name is: 2T_tandem data_" + str(top_name) + '+' + str(bot_name) + '+' + str(coupling) + '+' + str(transmission) + '_' + str(i)
-                    
-                    
                     tandem_2T.append(msg3)
                     
                 else:
                     
                     msg3= '\033[1m' + "2T Tandem" + '\033[0m' + "\nCoupling Method: " + str(coupling) + "\nlight transmitted onto bottom cell: " + str(transmission) + "%" + "\nTop Cell is " + str(top_name) + "\n" + str(top_name) + " limiting efficiency = " + str(top_2T_eff) + "%" + "\nBottom Cell is " + str(bot_name) + "\n" + str(bot_name) + " limiting efficiency = " + str(bot_2T_eff) + "%" + "\nThe tandem efficiency for " + str(top_name) + " and " + str(bot_name) + " is "+ str(Effi_2T) + "%" + "\nThe results are saved in the 'tandems_data' folder and the file name is: 2T_tandem data_" + str(top_name) + '+' + str(bot_name) + '+' + str(coupling) + '+' + '_' + str(i)
-                    
-                    tandem_2T.append(msg3)
-                              
+                    tandem_2T.append(msg3)         
                 
             # Data plotting        
             if print_graphs == 1:
@@ -959,8 +890,6 @@ def calc_tandem_2T_eff(top_file_list, bot_file_list, lambdafile, coupling, trans
                 if bot_name not in cellNameList:
                     ax4.plot(bot_se['wl'], bot_se['1JSE'], '--', label=bot_name)
 
-                
-                      
             cellNameList.append(top_name)
             cellNameList.append(bot_name)  
 
@@ -1036,10 +965,6 @@ def calc_tandem_2T_eff(top_file_list, bot_file_list, lambdafile, coupling, trans
         fig6.savefig('../tandems_images/{}{:d}.png'.format('SJ_IV_' + top_name + '+' + bot_name + '_' + coupling + '_', i), format="png", bbox_inches = "tight", dpi=500)
        
     return  Effi_2T, fig, fig2, fig3, fig4, fig5,  fig6, tandem_data, tandem_list, qe_list, tandem_2T, tandem_v
-       
-
-
-
      
 #Widgets part
         
@@ -1078,10 +1003,6 @@ class SelectFilesButton(widgets.Button):
         b.description = "Files Selected"
         b.icon = "check-square-o"
         b.style.button_color = "lightgreen"
-
-    
-  
-    
     
 def te_controls():
     
@@ -1103,7 +1024,6 @@ def te_controls():
         #top transmission file for lambda coupling
         lambdafile = trnsel3._files 
         
-        
         ##activating coupling methods
         cpl3=coupl3.value
         
@@ -1117,7 +1037,6 @@ def te_controls():
             with outbox:
                 display(fig2)
                 print(" ")
-                #print(qe_list)
                 print(Fore.BLACK +',\n'.join(qe_list))
                 print(" ")
                 display(fig4)
@@ -1126,7 +1045,6 @@ def te_controls():
                 print("Note: Coupling methods are used to estimate the spectral efficiency of top and bottom cells in a 4T Tandem")
                 print(" ")
                 print(" ")
-                #if  self.print_data_flag == True:
                 print(Fore.BLACK +',\n'.join(tandem_4T))
                 print(" ")
                 display(fig)
@@ -1184,7 +1102,6 @@ def te_controls():
         
         #top transmission file for lambda coupling
         lambdafile = trnsel3._files 
-        
         
         ##activating coupling methods
         cpl3=coupl3.value
@@ -1256,17 +1173,11 @@ def te_controls():
                 print(Fore.RED +"Bandgap of top cell missing!\nPlease manually enter the bandgap of top cell \nby designating a column's header as Eg \nand entering the value in the column's second row")
                 print("-----------------------------")
     
-    
-    
-   
 #    def updateWidget(*args)
-        
-    
     
     '''
     use interactive_input for GUI in IPython
     '''
-        
     cell_layout = widgets.Layout(display='inline_flex',
         flex_flow='row',
         justify_content='flex-end',
@@ -1315,7 +1226,6 @@ def te_controls():
         layout=cell_layout
     )
     
-    
     #Slider for fixed coupling transmission
     trnsm3 = widgets.IntSlider(
         value=90, min=0, max=100, step=1, 
@@ -1335,11 +1245,7 @@ def te_controls():
     lambdalink = widgets.link((trnsel3, 'files'), (lambdatext, 'options'))
 
     # Column 3
-    #s3label = widgets.Label(value='Step 3: Select output options')
-    
     s3label = widgets.Label(value='Step 3: Select calculate options')
-    
-    
     
     # Actions   
   
@@ -1355,7 +1261,6 @@ def te_controls():
     clr = widgets.Button(
         description="Clear Output Results",
         layout=cell_layout)
-
 
     #displaying message using .Output method in jupyter lab
     outbox = widgets.Output()
@@ -1379,7 +1284,6 @@ def te_controls():
     calc_2.on_click(on_button_click_2T)
     clr.on_click(clear_plots)
     
-        
      # user interface        
     box_layout = widgets.Layout(display='flex',
         flex_flow='column',
@@ -1387,7 +1291,6 @@ def te_controls():
         width='33.33%',
         height = '400px')
 
-    
     #for output results
     box_layout_2 = widgets.Layout(display='flex',
         flex_flow='column',
@@ -1400,11 +1303,8 @@ def te_controls():
     rtbox = widgets.VBox(rtcntrls, layout=box_layout)
     dnbox = widgets.VBox(dncntrls, layout=box_layout_2)
     
-    
-    
     ui = widgets.HBox([leftbox, ctrbox, rtbox])
     ui2 = widgets.HBox([dnbox])
-    
     
     display(ui, ui2)
 

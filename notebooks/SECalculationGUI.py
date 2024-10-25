@@ -1,9 +1,7 @@
 #SE calculator with GUI interface
 
 import os
-#import io
 import sys
-#from datetime import date
 from tkinter import Tk, filedialog, Toplevel
 
 import colorama
@@ -20,10 +18,6 @@ from scipy.interpolate import interp1d
 import textwrap
 
 from iv_params.iv_params import IV_Params
-
-#import warnings
-#warnings.simplefilter("ignore")
-
 
 
 #Defining the class for sending different error message
@@ -161,7 +155,7 @@ def calc_se_eff(irrfile, IV_file_list, QE_file_list): #irrfile=spectra file, IV_
             try:
             
                 #remove junk from end of QE data
-                if 'end' in QE['wavelength (nm)'].unique():   ####why is this throwing an error as of December 2023
+                if 'end' in QE['wavelength (nm)'].unique():
                     end_row = QE.index[QE['wavelength (nm)'] == 'end'][0]
                     QE = QE.iloc[:end_row].copy()
                 QE = QE.rename(columns={"wavelength (nm)": "wl_raw", "QE (%)": "QE"})
@@ -195,35 +189,28 @@ def calc_se_eff(irrfile, IV_file_list, QE_file_list): #irrfile=spectra file, IV_
                 SE['wl'] = df['wl']
                 SE['I_sun'] = df['I_sun']
                 
-     
                 #getting the values of voltage (Voc) and current (Jsc) from I-V curve using iv_params     
                 ivFOM = IV_Params(IV.v, IV.i)
                 ivFOM.calc_iv_params()
                 ivFOM =ivFOM.calc_iv_params()
-                
-
+            
                 #calculate Jsc(lambda).....spectrally-resolved Jsc
                 SE['Jsc_wl'] = spectralJscfactor*SE['wl']*SE['QE_smooth']* SE['I_sun']
                 SE['Jsc_wl'] = SE['Jsc_wl'].replace(np.nan,0)
 
-            
                 #Integrated Jsc from Spectrally-resolved Jsc as well as normalized from mA to A by dividing the electric current value by 1000
                 SE_Integrated_Jsc= np.trapz(SE['Jsc_wl'])/1000
         
-                
                 #Adjusting the integrated Jsc from EQE to the Jsc from I-V - taking the Jsc from I-V curve into consideration as a benchmark
                 Factor_Jsc=(ivFOM['isc'] - SE_Integrated_Jsc) / SE_Integrated_Jsc
                 Factor_Jsc=1+Factor_Jsc
                 SE['Jsc_wl']=SE['Jsc_wl']*Factor_Jsc
-                
                 
                 #exporting data in columns of SE_data file 
                 SE['QE_smooth']=SE['QE_smooth']*Factor_Jsc
                 SE['v']=IV.v
                 SE['i']=IV.i
                 SE['Eg']=Bandgap
-                
-                
                 
                 #input power
                 Pin=1  ## considering the standard Am1.5G input power for efficiency calculations (1 kW/m^2)
@@ -235,7 +222,6 @@ def calc_se_eff(irrfile, IV_file_list, QE_file_list): #irrfile=spectra file, IV_
                 #Efficiency using provided I-V curve
                 Effi_IV = ivFOM['pmp'] / Pin   ## pmp is maximum power point of a given I-V curve 
                 Effi_IV = float("{:.2f}".format(Effi_IV))  ## taking values up to two decimal 
-            
             
                 #passing message for the calculated efficiency from I-V curve
                 msg= str(IV_name) +": " + '\033[1m' + str(Effi_IV) + '\033[0m' + "%"
@@ -257,9 +243,7 @@ def calc_se_eff(irrfile, IV_file_list, QE_file_list): #irrfile=spectra file, IV_
                     ax1.plot(IV['v'], IV['i'], label = f"{IV_name}")
                     ax2.plot(SE['wl'], SE['QE_smooth'], markerfacecolor='none', label= f"{QE_name}")
                     ax3.plot(SE['wl'], SE['SE'], label= f"{IV_name}")
-                    #ax3.set_ylim(0,)
                     ax4.plot(SE['wl'], SE['SE'], label= f"{IV_name}")
-                    #ax4.set_ylim(0)
 
             #save SE data including all other processed data: Jsc(lamda), Smooth QE
             SE_line = [SE]
@@ -279,14 +263,10 @@ def calc_se_eff(irrfile, IV_file_list, QE_file_list): #irrfile=spectra file, IV_
             ax1.legend(loc=1)
             ax2.legend(loc=0)
             ax3.legend(loc=1)
-            #ax3.legend(bbox_to_anchor=(1.05, 1), bbox_inches='tight', loc='upper left', borderaxespad=0.)
-
             
             #Save Figure
             plt.savefig('../SE_images/{}{:d}.png'.format('all_cells_calculatedSE' + '_', i, dpi=300))
             ax4.legend(loc=1)
-            #clear figure traces
-            #ax4.cla()
         else:
             raise WrongIVandQEName
 
@@ -307,14 +287,6 @@ def calc_se_eff(irrfile, IV_file_list, QE_file_list): #irrfile=spectra file, IV_
 
 
 #GUI-part
-
-#class SelectFilesButton(widgets.FileUpload()):
-#    files = traitlets.List([], help="List of file paths").tag(sync=True)
-#    _files = traitlets.List([], help="List of file paths").tag(sync=True)
-#    uploader = widgets.FileUpload(multiple=True)
-#    display(uploader)
-
-
 class SelectFilesButton(widgets.Button):
     """A file widget that leverages tkinter.filedialog."""
     files = traitlets.List([], help="List of file paths").tag(sync=True)
@@ -351,9 +323,6 @@ class SelectFilesButton(widgets.Button):
         b.description = "Files Selected"
         b.icon = "check-square-o"
         b.style.button_color = "lightgreen"
-        #root.destroy()   #crashes kernel when second file browser is opened after first closes
-
-
         
 def se_calculation():
     
@@ -368,13 +337,6 @@ def se_calculation():
         QE_file_list = botselect._files
         #spectra file
         irrfile = spectra._files
-
-        # Check if the user canceled file selection
-#        if not IV_file_list or not QE_file_list or not irrfile:
-#            with outbox:
-#                clear_output()
-#                print(Fore.RED + 'File selection canceled. Please select files and try again.')
-#            return 
         
         #recalling function calc_se_eff(IV_file_list, QE_file_list) where all the calculations done
         try:
@@ -397,7 +359,7 @@ def se_calculation():
                 print(Fore.BLACK +',\n'.join(FN_list))
                 print("-----------------------------------------")
                 print(' ')
-                display(fig1) #commenting these lines suppresses GUI figures without warning, but not in log
+                display(fig1)
                 display(fig2)   
     
                 
@@ -436,20 +398,15 @@ def se_calculation():
     
     # Column 1
     s1label = widgets.Label(value='Step 1: Select File(s) ')
-    
     toplabel = widgets.Label(value='Select I-V file(s)')
+
     # Button for selecting IV file (s)
     topselect = SelectFilesButton(description = 'Select Files', layout=cell_layout)
-#    topselect = widgets.FileUpload(accept='',multiple=True)
     IV_file_list = topselect.files
-#    tops = topselect.value[0]
-#    IV_file_list = pd.read_csv(io.BytesIO(tops.content))
-    
-    
     toptext = widgets.Select(options = [], layout=cell_layout)
-    toplink = widgets.link((topselect, 'files'), (toptext, 'options'))
-                            
+    toplink = widgets.link((topselect, 'files'), (toptext, 'options'))                    
     botlabel = widgets.Label(value='Select EQE file(s)')
+
     # Button for selecting QE file(s)
     botselect = SelectFilesButton(description = 'Select Files', layout=cell_layout)
 
@@ -457,8 +414,6 @@ def se_calculation():
 
     bottext = widgets.Select(options = [], layout=cell_layout)
     botlink = widgets.link((botselect, 'files'), (bottext, 'options'))
-    
-    
     
     # Column 2
     s2label = widgets.Label(value='Step 2: Select Spectral Irradiance File')
@@ -489,7 +444,6 @@ def se_calculation():
             description="Clear Output Results",
             layout=cell_layout)
 
-
     leftcntrls = [s1label, toplabel, topselect, toptext, botlabel, botselect, bottext]
     
     ctrcntrls = [s2label, spectra, spectratext]
@@ -499,11 +453,9 @@ def se_calculation():
     dncntrls = [outbox]
     
     # call function to start calculations 
-    
     calcbutton.on_click(on_button_click)
     clr_plots.on_click(clear_plots)
     
-
     # user interface        
     box_layout = widgets.Layout(display='flex',
         flex_flow='column',
@@ -518,7 +470,6 @@ def se_calculation():
         width='100%',
         height = '1400px')
     
-    
     leftbox = widgets.VBox(leftcntrls, layout=box_layout)
     
     ctrbox = widgets.VBox(ctrcntrls, layout=box_layout)
@@ -527,13 +478,10 @@ def se_calculation():
 
     dnbox = widgets.VBox(dncntrls, layout=box_layout_2)
 
-    
-
     ui = widgets.HBox([leftbox, ctrbox, rtbox])
     ui2 = widgets.HBox([dnbox])
         
     display(ui, ui2)
-#    return ui, ui2
 
 if __name__=="__main__":
     se_calculation()
