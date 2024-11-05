@@ -14,7 +14,7 @@ The SE and Tandem Performance calculators are based on the following publication
 * 'conda install colorama ipywidgets  matplotlib numpy pandas traitlets cycler ipython scipy openpyxl' followed by 
 * 'pip install iv-params os-sys textwrap3 tk pytest-warnings datetime'.
 
-* Clone or download the code for the SE and Tandem Performance calculators here: https://github.nrel.gov/Tandems/SE-and-Tandems
+* Clone or download the code for the SE and Tandem Performance calculators here: https://github.com/NREL/SE-and-Tandems
 
 * Jupyter Lab is required for running these calculators. Jupyter Lab can be installed using "pip install jupyterlab" and run using "jupyter lab" (documentation: https://jupyter.org/install). Using Jupyter Notebook in place of Lab may cause errors with data upload and visualization.
 
@@ -183,7 +183,7 @@ Instructions for Tandem Performance calculator:
 
 ## Known Errors 
 
-* Python windows for file selection open behind the browser window, not in front.
+* Python windows for file selection open behind the browser window, not in front (and may raise a CATransaction warning, but should not influence use of the calculators otherwise).
 
 * Separate python windows open for each notebook GUI once the first file is selected. These windows stay open even after calculation until the terminal session is closed. Once you are finished using the GUI, you can force quit the idle python instances.
 
